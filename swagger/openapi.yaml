@@ -1,0 +1,777 @@
+openapi: "3.0.3"
+info:
+  version: "1.0.0"
+  title: "Fullstack API"
+  description: "Fullstack Server API documentation"
+servers:
+- url: "http://localhost:5000/api/v1"
+  description: "Local API test server"
+tags:
+- name: "user"
+  description: "Operations on users"
+- name: "data"
+  description: "Operations on data (cgm, bolus, basal, meals or exercise)"
+- name: "diagnosis"
+  description: "Operations on diagnoses of patients"
+- name: "note"
+  description: "Operations on per-patient notes"
+paths:
+  /diagnosis/{uid}:
+    post:
+      tags:
+        - "diagnosis"
+      summary: "Add diagnosis"
+      description: ""
+      operationId: "post_diagnosis"
+      parameters:
+        - name: "uid"
+          in: "path"
+          description: "User ID"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        description: "Diagnosis information"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                name:
+                  type: "string"
+                medicine:
+                  type: "array"
+                  items:
+                    type: "string"
+      security:
+        - ApiKey: [ ]
+      responses:
+        default:
+          description: "successful operation"
+    get:
+      tags:
+        - "diagnosis"
+      summary: "Get list of diagnoses for patient"
+      description: ""
+      operationId: "get_diagnosis"
+      parameters:
+        - name: "uid"
+          in: "path"
+          description: "User ID"
+          required: false
+          schema:
+            type: "string"
+      security:
+        - ApiKey: [ ]
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    _id:
+                      type: "object"
+                      properties:
+                        $oid:
+                          type: "string"
+                          default: "012345689abcdef012345678"
+                    name:
+                      type: "string"
+                    medicine:
+                      type: "array"
+                      items:
+                        type: "string"
+  /diagnosis/{did}:
+    put:
+      tags:
+        - "diagnosis"
+      summary: "Update diagnosis information"
+      description: ""
+      operationId: "put_diagnosis"
+      parameters:
+        - name: "did"
+          in: "path"
+          description: "Diagnosis ID"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                name:
+                  type: "string"
+                medicine:
+                  type: "array"
+                  items:
+                    type: "string"
+      security:
+        - ApiKey: [ ]
+      responses:
+        "200":
+          description: "successful operation"
+    delete:
+      tags:
+        - "diagnosis"
+      summary: "Delete diagnosis"
+      description: ""
+      operationId: "delete_diagnosis"
+      parameters:
+        - name: "did"
+          in: "path"
+          description: "Diagnosis ID"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - ApiKey: [ ]
+      responses:
+        "200":
+          description: "successful operation"
+
+  /note/{uid}:
+    post:
+      tags:
+        - "note"
+      summary: "Add note"
+      description: ""
+      operationId: "post_note"
+      parameters:
+        - name: "uid"
+          in: "path"
+          description: "User ID"
+          required: false
+          schema:
+            type: "string"
+      security:
+        - ApiKey: [ ]
+      requestBody:
+        description: "Note text"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                text:
+                  type: "string"
+                private:
+                  type: "boolean"
+                  default: false
+      responses:
+        default:
+          description: "successful operation"
+    get:
+      tags:
+        - "note"
+      summary: "Get list of notes for patient"
+      description: ""
+      operationId: "get_notes"
+      parameters:
+        - name: "uid"
+          in: "path"
+          description: "User ID"
+          required: false
+          schema:
+            type: "string"
+      security:
+        - ApiKey: [ ]
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    _id:
+                      type: "object"
+                      properties:
+                        $oid:
+                          type: "string"
+                          default: "012345689abcdef012345678"
+                    text:
+                      type: "string"
+                    private:
+                      type: "boolean"
+                      default: false
+                    writer:
+                      type: "object"
+                      properties:
+                        $oid:
+                          type: "string"
+                          default: "012345689abcdef012345678"
+                    timestamp:
+                      type: "object"
+                      properties:
+                        $date:
+                          type: "string"
+                          default: "2022-06-08T16:21:42.600Z"
+  /note/{nid}:
+    put:
+      tags:
+        - "note"
+      summary: "Update note"
+      description: ""
+      operationId: "put_note"
+      parameters:
+        - name: "nid"
+          in: "path"
+          description: "Note ID"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                text:
+                  type: "string"
+                private:
+                  type: "boolean"
+                  default: false
+      security:
+        - ApiKey: [ ]
+      responses:
+        "200":
+          description: "successful operation"
+    delete:
+      tags:
+        - "note"
+      summary: "Delete note"
+      description: ""
+      operationId: "delete_note"
+      parameters:
+        - name: "nid"
+          in: "path"
+          description: "Note ID"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - ApiKey: [ ]
+      responses:
+        "200":
+          description: "successful operation"
+
+  /data/get:
+    post:
+      tags:
+      - "data"
+      summary: "Get own data"
+      description: ""
+      operationId: "get_own_data"
+      requestBody:
+        description: "Data query information. Either have ndays or start_time. end_time is optional"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                ndays:
+                  type: "integer"
+                  default: 1
+                start_time:
+                  type: "string"
+                  default: "2022-01-15"
+                end_time:
+                  type: "string"
+                  default: "2022-01-30"
+                show:
+                  type: "array"
+                  items:
+                    type: "string"
+                    default: "cgm"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "success"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  $data_type:
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        t:
+                          type: "integer"
+                        v:
+                          type: "number"
+  /data/previews:
+    get:
+      tags:
+      - "data"
+      summary: "Get all viewable prewviews"
+      description: ""
+      operationId: "get_previews"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    _id:
+                      type: "object"
+                      properties:
+                        $oid:
+                          type: "string"
+                          default: "012345689abcdef012345678"
+                    values:
+                      type: "array"
+                      items:
+                        type: "integer"
+                    distribution:
+                      type: "array"
+                      items:
+                        type: "integer"
+                    problems:
+                      type: "array"
+                      items:
+                        type: "integer"
+                    ttl:
+                      type: "object"
+                      properties:
+                        $date:
+                          type: "string"
+                          default: "2022-06-08T16:21:42.600Z"
+  /data:
+    post:
+      tags:
+      - "data"
+      summary: "Add new data"
+      description: ""
+      operationId: "add_Data"
+      requestBody:
+        description: "Data information"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                type:
+                  type: "string"
+                  default: "cgm"
+                value:
+                  type: "number"
+                timestamp:
+                  type: "integer"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "successful operation"
+  /data/{uid}/get:
+    post:
+      tags:
+      - "data"
+      summary: "Get patient data"
+      description: ""
+      operationId: "get_data"
+      parameters:
+        - name: "uid"
+          in: "path"
+          description: "User ID"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        description: "Data query information. Either have ndays or start_time. end_time is optional"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                ndays:
+                  type: "integer"
+                  default: 1
+                start_time:
+                  type: "string"
+                  default: "2022-01-15"
+                end_time:
+                  type: "string"
+                  default: "2022-01-30"
+                show:
+                  type: "array"
+                  items:
+                    type: "string"
+                    default: "cgm"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "success"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  $data_type:
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        t:
+                          type: "integer"
+                        v:
+                          type: "number"
+  /data/extra:
+    put:
+      tags:
+      - "data"
+      summary: "Update extra data: HbA1c, Weight, Blood pressure"
+      description: ""
+      operationId: "put_extra"
+      security:
+      - ApiKey: []
+      requestBody:
+        description: "Weight in kg, HbA1c in mmol/mol, blood pressure in mmHg"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                HbA1c:
+                  type: "number"
+                weight:
+                  type: "number"
+                blood_pressure:
+                  type: "number"
+      responses:
+        "200":
+          description: "successful operation"
+  /user/login:
+    post:
+      tags:
+      - "user"
+      summary: "Login"
+      description: ""
+      operationId: "login_user"
+      requestBody:
+        description: "Created user object"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                email:
+                  type: "string"
+                  default: "User0@example.com"
+                password:
+                  type: "string"
+                  default: "password1"
+      responses:
+        "200":
+          description: "successful login"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  api_key:
+                    type: "string"
+  /user:
+    post:
+      tags:
+      - "user"
+      summary: "Create user"
+      description: ""
+      operationId: "post_user"
+      requestBody:
+        description: "Created user information"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                email:
+                  type: "string"
+                  default: "test@example.com"
+                first_name:
+                  type: "string"
+                  default: "first-name"
+                last_name:
+                  type: "string"
+                  default: "last-name"
+                birthdate:
+                  type: "string"
+                  default: "2000-01-01"
+                password:
+                  type: "string"
+                  default: "password"
+                password_check:
+                  type: "string"
+                  default: "password"
+      responses:
+        default:
+          description: "successful operation"
+    get:
+      tags:
+      - "user"
+      summary: "Get list of viewable users"
+      description: ""
+      operationId: "get_users"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  self:
+                    type: "object"
+                    properties:
+                      _id:
+                        type: "object"
+                        properties:
+                          $oid:
+                            type: "string"
+                            default: "012345689abcdef012345678"
+                      email:
+                        type: "string"
+                      first_name:
+                        type: "string"
+                      last_name:
+                        type: "string"
+                      profile_picture:
+                        type: "string"
+                      is_doctor:
+                        type: "boolean"
+                      age:
+                        type: "integer"
+                        default: 25
+                  viewable:
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        _id:
+                          type: "object"
+                          properties:
+                            $oid:
+                              type: "string"
+                              default: "012345689abcdef012345678"
+                        email:
+                          type: "string"
+                        first_name:
+                          type: "string"
+                        last_name:
+                          type: "string"
+                        glycemic_ranges:
+                          type: "array"
+                          items:
+                            type: "number"
+                        glycemic_targets:
+                          type: "array"
+                          items:
+                            type: "number"
+                        extra_data:
+                          type: "object"
+                          properties:
+                            HbA1c:
+                              type: "number"
+                            weight:
+                              type: "number"
+                            blood_pressure:
+                              type: "number"
+                        profile_picture:
+                          type: "string"
+                        age:
+                          type: "integer"
+                          default: 25
+    put:
+      tags:
+      - "user"
+      summary: "Update own user information"
+      description: ""
+      operationId: "put_self"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                email:
+                  type: "string"
+                first_name:
+                  type: "string"
+                last_name:
+                  type: "string"
+                birthdate:
+                  type: "string"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "successful operation"
+  /user/image:
+    put:
+      tags:
+      - "user"
+      summary: "Update profile picture"
+      description: ""
+      operationId: "put_image"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "successful operation"
+  /user/{uid}:
+    get:
+      tags:
+      - "user"
+      summary: "Get viewable user"
+      description: ""
+      operationId: "get_user"
+      parameters:
+      - name: "uid"
+        in: "path"
+        description: "User ID"
+        required: true
+        schema:
+          type: "string"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  email:
+                    type: "string"
+                  first_name:
+                    type: "string"
+                  last_name:
+                    type: "string"
+                  profile_picture:
+                    type: "string"
+                  age:
+                    type: "integer"
+                    default: 25
+                  is_doctor:
+                    type: "boolean"
+        "403":
+          description: "Not allowed to view this user"
+        "404":
+          description: "User not found"
+    put:
+      tags:
+      - "user"
+      summary: "Update user information"
+      description: ""
+      operationId: "put_user"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                email:
+                  type: "string"
+                first_name:
+                  type: "string"
+                last_name:
+                  type: "string"
+                birthdate:
+                  type: "string"
+      parameters:
+      - name: "uid"
+        in: "path"
+        description: "User ID"
+        required: true
+        schema:
+          type: "string"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "successful operation"
+        "403":
+          description: "Not allowed to view this user"
+        "404":
+          description: "User not found"
+  /user/glycemic/{uid}:
+    put:
+      tags:
+      - "user"
+      summary: "Update glycemic parameters"
+      description: ""
+      operationId: "put_glycemic"
+      requestBody:
+        description: "Only doctors may update this. Ranges is a list of 4 numbers, and targets is a list of 5 numbers"
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                glycemic_ranges:
+                  type: "array"
+                  items:
+                    type: "number"
+                glycemic_targets:
+                  type: "array"
+                  items:
+                    type: "number"
+      parameters:
+      - name: "uid"
+        in: "path"
+        description: "User ID"
+        required: true
+        schema:
+          type: "string"
+      security:
+      - ApiKey: []
+      responses:
+        "200":
+          description: "successful operation"
+        "403":
+          description: "Not allowed to view this user"
+        "404":
+          description: "User not found"
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: "api_key"
