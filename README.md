@@ -1,4 +1,8 @@
 # Full stack backend
+
+## Inporting data
+Copy the data from https://1drv.ms/u/s!AoVvOU4QrCHfmLdj0GRmnBauUErRjA?e=LY8X5c into the folder "data"
+
 ## Installation
 Install all dependencies. In a terminal, this can be done with:
 ```
